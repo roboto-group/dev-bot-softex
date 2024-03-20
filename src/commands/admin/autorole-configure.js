@@ -26,7 +26,7 @@ module.exports = {
       if (autorole) {
         //Checando no BD se há um registro com esse mesmo cargo
         if (autorole.roleId === targetRoleId) {
-          interaction.editReply('Autorole já foi configurado para esse cargo. Para desabilitar, execute "/autoerole-disable"')
+          interaction.editReply('Autorole já foi configurado para esse cargo. Para desabilitar, execute "/autorole-disable"')
           return;
         }
 
