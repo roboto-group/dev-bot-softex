@@ -17,7 +17,7 @@ module.exports = (client, interaction) => {
             new ButtonBuilder()
             .setLabel('verificar')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('1194645892607783034')
+            .setCustomId('welcomeButton')
         )
 
         channel.send({
