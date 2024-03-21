@@ -21,7 +21,6 @@ module.exports = {
 
       //Será necessário construir uma validação para o CPF -> @Marlos, se garante??
       const cpf = interaction.options._hoistedOptions[0].value
-      console.log(cpf);//saber que objeto é esse, depois apagar
       
       await interaction.deferReply({ephemeral: true});
 
@@ -89,7 +88,7 @@ module.exports = {
     }
   },
   
-  name: 'verify',
+  name: 'verificar',
   description: 'Verifica se o novo usuário é um aluno',
   options: [
     {

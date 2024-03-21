@@ -13,16 +13,13 @@ module.exports = (client, interaction) => {
         const welcomeEmbed = new EmbedBuilder()
         .setColor(0x0099FF)
         .setTitle('Seja Bem-Vindo(a)!')
-        .setAuthor({ name: 'FAP Softex', iconURL: 'https://i.imgur.com/AfFp7pu.png' })
-        .setDescription('Olá, você está no canal de verificação de ingressante. Execute o comando /verify e digite seu CPF no local indicado, para que possamos te dar acesso ao servidor.')
-        .setThumbnail('https://i.imgur.com/AfFp7pu.png')
+        .setDescription('Olá! você está no canal de verificação do servidor SOFTEX LABS. Execute o comando /verificar e digite seu CPF no local indicado, para que possamos te dar pleno acesso.')
         .addFields(
-            { name: 'Dúvidas', value: 'Fale com a coordenação do curso.' },
+            { name: 'Dúvidas?', value: 'Fale com a coordenação do curso.' },
             { name: '\u200B', value: '\u200B' },
         )
-        .setImage('https://i.imgur.com/AfFp7pu.png')
         .setTimestamp()
-        .setFooter({ text: 'SOFTEX Pernambuco, 2024', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
+        .setFooter({ text: 'SOFTEX Pernambuco', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
         
         channel.send({ embeds: [welcomeEmbed]});
         
