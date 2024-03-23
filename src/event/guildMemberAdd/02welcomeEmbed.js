@@ -1,5 +1,5 @@
 // at the top of your file
-const { EmbedBuilder, Client, Interaction} = require('discord.js');
+const { EmbedBuilder, Client, Interaction, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder } = require('discord.js');
 
 module.exports = (client, interaction) => {
     try {
@@ -21,10 +21,15 @@ module.exports = (client, interaction) => {
         .setTimestamp()
         .setFooter({ text: 'SOFTEX Pernambuco', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
         
-        channel.send({ embeds: [welcomeEmbed]});
+        channel.send({ embeds: [welcomeEmbed], 
+            components: [new ActionRowBuilder()
+                .addComponents(new ButtonBuilder()
+                    .setLabel('verificar')
+                    .setStyle(ButtonStyle.Primary)
+                    .setCustomId('welcomeButton'))]});
         
     } catch (error) {
-        console.log(`Erro durante envio da embed de Boas-Vindas: ${error}`);
+        console.log(`Erro durante o procedimento de boas-vindas: ${error}`);
     }
     
 }

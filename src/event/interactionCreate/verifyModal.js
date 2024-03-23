@@ -1,26 +1,8 @@
-const { Client, Interaction, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-
-/**
-   * 
-   * @param {Client} client 
-   * @param {Interaction} interaction 
-   */
+const { ModalSubmitInteraction, Client, Interaction, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
 module.exports = async (client, interaction) => {
 
     if(!interaction.isButton()) return;
-
-    interaction.deferReply({ ephemeral: true });
-
-    const button = interaction.customId;
-    console.log(button);
-
-    if(!button) {
-        interaction.reply({
-            content: 'Botão não encontrado.',
-        });
-        return;
-    }
 
     //criando o modal
     const modal = new ModalBuilder()
@@ -44,8 +26,16 @@ module.exports = async (client, interaction) => {
 
     //mostrando o modal ao usuário
     await interaction.showModal(modal);
-   
-}
 
+    if(!interaction.isModalSubmit()) return;
+
+    if (interaction.customId === 'verifyModal') {
+		await interaction.update({ content: 'Your submission was received successfully!' });
+	}
+
+    // Get the data entered by the user
+	const cpfValue = interaction.fields.getTextInputValue('cpfInput');
+	console.log({ cpfValue });
+}
 
 
