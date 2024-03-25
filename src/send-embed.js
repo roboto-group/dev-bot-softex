@@ -12,7 +12,7 @@ const client = new Client({
 
 client.on('ready', async (c) => {
   try {
-     const channel = await client.channels.cache.get('1194645892607783034');
+     const channel = await client.channels.cache.get(process.env.chanel_libcargo);
      if (!channel) return;
  
       const embed = new EmbedBuilder()
