@@ -1,6 +1,5 @@
 const { ApplicationCommandOptionType } = require("discord.js");
 
-
 module.exports = {
   name: 'addnewuser',
   description: 'Adiciona novo usuario no banco de dados.',

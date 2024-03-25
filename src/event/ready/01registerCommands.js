@@ -4,14 +4,12 @@ const getLocalCommands = require('../../utils/getLocalCommands');
 const areCommandsDifferent = require('../../utils/areCommandsDifferent');
 const { ApplicationCommand } = require('discord.js');
 
-
 module.exports = async (client) => {
   
   try {
     const localCommands = getLocalCommands();
     const applicationCommands = await getApplicationCommands(client, testServer)
     
-
     for (const localCommand of localCommands) {
       const { name, description, options } = localCommand;
       
@@ -51,5 +49,4 @@ module.exports = async (client) => {
   } catch (error) {
     console.log(error)
   }
-      
 };

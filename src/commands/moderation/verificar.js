@@ -8,18 +8,17 @@ module.exports = {
    * @param {Interaction} interaction 
    */
   callback: async (client, interaction) => {
-
-    const idCargoFront = '1186625105565061120'
-    const idCargoBack = '1186625588874706955'
+    //??? Precisa checar quais cargos serão usados
+    const idCargo = '1221664065601146890'
     
     try {
-      //verifica se o usuario pe um robo
+      //verifica se o usuario e um robo
       if (interaction.user.bot) return;
 
       //verifica se a interacao foi feita de dentro de um servidor
+      //??? Pq o if esta comentado?
       //if (!interaction.inGuild()) return;
 
-      //Será necessário construir uma validação para o CPF -> @Marlos, se garante??
       const cpf = interaction.options._hoistedOptions[0].value
       
       await interaction.deferReply({ephemeral: true});
@@ -34,7 +33,7 @@ module.exports = {
 
       //Se o usuario existir no BD
       if (user) {
-        console.log('Achei seu CPF no banco de dados!')
+        console.log('CPF localizado no banco de dados!')
         
         // Verificando se o userId e o guildId estão vazios no BD e atualizando-os.
         
@@ -45,50 +44,36 @@ module.exports = {
             console.log('guildId atualizado!');
             user.guildId = interaction.guild.id;
           }
-          console.log('Atualizações salves do Banco de Dados.');
+          console.log('Atualizações salvas no Banco de Dados.');
           await user.save();
         }; 
-          
+        
         //resposta ao usuário
         await interaction.editReply({
+          //??? Modificar mensagem de acordo com o canal/cargo
           content: `${user.userName} é um aluno do curso de ${user.curso} do turno da ${user.horario}.`,
           ephemeral: true,
         });
-          
         
         const novoUser = interaction.member
         
-        //Dando um tempo para que o usuario veja a respota do BOT
-        setTimeout(()=>{
-          
-          //removendo cargo de Não-verificado
-          novoUser.roles.remove('1194646146325426176');
-          
-        }, 3000)
-        
-        if (user.curso === 'frontend') {
+        if (user.curso === 'residente') {
           
           //passando o cargo
-          novoUser.roles.add(idCargoFront);
-        } else if (user.curso === 'backend') {
-          //passando o cargo
-          novoUser.roles.add(idCargoBack);
+          novoUser.roles.add(idCargo);
         };
-            
-        
+      
       } else { // caso o usuário não exista no BD
         
-        interaction.editReply(`Não consegui encontrar seu CPF no banco de dados! 😒 Entre em contato com o Adm do curso.`)
+        interaction.editReply(`Não consegui encontrar seu CPF no banco de dados! 😒 Entre em contato com algum administrador.`)
         return;
       }
-
-
     } catch (error) {
       console.log(error)
     }
   },
   
-  name: 'verify',
+  name: 'verificar',
   description: 'Verifica se o novo usuário é um aluno',
   options: [
     {
@@ -96,8 +81,6 @@ module.exports = {
       description: 'Digite seu CPF:',
       required: true,
       type: ApplicationCommandOptionType.String,
-      
-      
     }
   ]
 }

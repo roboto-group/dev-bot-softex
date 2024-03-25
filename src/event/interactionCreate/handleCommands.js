@@ -5,9 +5,9 @@ const getLocalCommands = require('../../utils/getLocalCommands');
 module.exports = async (client, interaction) => {
   //é comando de chat?
   if (!interaction.isChatInputCommand()) return;
-  
+
   const localCommands = getLocalCommands();
-  
+
   try {
 
     const commandObject = localCommands.find(
@@ -54,7 +54,6 @@ module.exports = async (client, interaction) => {
 
     //Bot tem permissão?
     if (commandObject.botPermissions?.length) {
-      
       for (const permission of commandObject.botPermissions) {
         const bot = interaction.guild.members.me;
 
@@ -67,9 +66,8 @@ module.exports = async (client, interaction) => {
           return;
         }
       };
-      
     };
-    
+
     //Execução do comando.
     await commandObject.callback(client, interaction);
 
