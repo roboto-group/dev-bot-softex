@@ -8,6 +8,9 @@ module.exports = {
    * @param {Interaction} interaction 
    */
   callback: async (client, interaction) => {
+    //checa se o comando foi executado no canal de residentes
+    const channel = await client.channels.cache.get('1194028538488168564');
+    if (!channel) return;
     //??? Precisa checar quais cargos serão usados
     const idCargo = '1221664065601146890'
     
@@ -73,8 +76,8 @@ module.exports = {
     }
   },
   
-  name: 'verificar',
-  description: 'Verifica se o novo usuário é um aluno',
+  name: 'validar',
+  description: 'Faz a validação do usuário',
   options: [
     {
       name: 'cpf',
