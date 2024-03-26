@@ -9,10 +9,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  balance: {
-    type: Number,
-    default: 0,
-  },
   userName: {
     type: String,
     required: true,
@@ -25,14 +21,14 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  horario: {
+  turno: {
     type: String,
     required: true,
   },
-  lastDaily: {
-    type: Date,
-    required: true,
-  },
+  cargos: {
+    type: Array,
+    required: true
+  }
 })
 
 module.exports = model('User', userSchema);
