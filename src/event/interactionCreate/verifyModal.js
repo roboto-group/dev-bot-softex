@@ -1,11 +1,17 @@
 const { ModalSubmitInteraction, Client, Interaction, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const User = require('../../models/Users');
 /**
  * 
  * @param {Client} client 
- * @param {ModalSubmitInteraction} interaction 
+ * @param {Interaction} interaction 
  * @returns 
  */
+
+//variável global que armazenará o cpf digitado pelo membro recém-chegado
 let cpfValue;
+//variável global que armazenará o objeto da interação de sumbissão de modal
+let interactionModal;
+
 module.exports = async (client, interaction) => {
 
     if(!interaction.isButton()) return;
@@ -40,13 +46,96 @@ module.exports = async (client, interaction) => {
 
     if (modalInteraction) {
         cpfValue = modalInteraction.fields.getTextInputValue('cpfInput');
+        interactionModal = modalInteraction;
 
         modalInteraction.reply(`A submissão do Modal foi bem sucedida!`);
     }
 
     console.log(cpfValue);
+    console.log(interactionModal);
+    console.log(interaction);
 
+    /** 
+    //verificação do CPF
+    const idCargoFront = '1186625105565061120'
+    const idCargoBack = '1186625588874706955'
     
+    try {
+      //verifica se o usuario pe um robo
+      if (interactionModal.user.bot) return;
+
+      //verifica se a interacao foi feita de dentro de um servidor
+      //if (!interaction.inGuild()) return;
+
+      //Será necessário construir uma validação para o CPF -> @Marlos, se garante??
+      //const cpf = interaction.options._hoistedOptions[0].value
+      
+      //await interaction.deferReply({ephemeral: true});
+
+      //criando a consulta
+      let query = {
+        cpf: cpfValue,
+      };
+
+      //fazendo a consulta ao BD
+      let user = await User.findOne(query);
+
+      //Se o usuario existir no BD
+      if (user) {
+        console.log('Achei seu CPF no banco de dados!')
+        
+        // Verificando se o userId e o guildId estão vazios no BD e atualizando-os.
+        
+        if (!user.userId) {
+          console.log('userId do Discord foi vinculado ao CPF')
+          user.userId = interactionModal.user.id
+          if (!user.guildId) {
+            console.log('guildId atualizado!');
+            user.guildId = interactionModal.guild.id;
+          }
+          console.log('Atualizações salves do Banco de Dados.');
+          await user.save();
+        }; 
+          
+        //resposta ao usuário
+        await interactionModal.editReply({
+          content: `${user.userName} é um aluno do curso de ${user.curso} do turno da ${user.horario}.`,
+          ephemeral: true,
+        });
+          
+        
+        const novoUser = interactionModal.member
+        
+        //Dando um tempo para que o usuario veja a respota do BOT
+        setTimeout(()=>{
+          
+          //removendo cargo de Não-verificado
+          novoUser.roles.remove('1194646146325426176');
+          
+        }, 3000)
+        
+        if (user.curso === 'frontend') {
+          
+          //passando o cargo
+          novoUser.roles.add(idCargoFront);
+        } else if (user.curso === 'backend') {
+          //passando o cargo
+          novoUser.roles.add(idCargoBack);
+        };
+            
+        
+      } else { // caso o usuário não exista no BD
+        
+        interactionModal.editReply(`Não consegui encontrar seu CPF no banco de dados! 😒 Entre em contato com o Adm do curso.`)
+        return;
+      }
+
+
+    } catch (error) {
+      console.log(error);
+    }
+*/
+
 }
 
 
