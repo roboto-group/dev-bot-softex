@@ -43,16 +43,6 @@ module.exports = async (client, interaction) => {
 
             modalInteraction.reply(`Seu cpf é '${cpfValue}' hohohohoho`)
         });
-
-    /**if(!interaction.isModalSubmit()) return;
-
-    if (interaction.customId === 'verifyModal') {
-		await interaction.update({ content: 'Your submission was received successfully!' });
-	}
-
-    // Get the data entered by the user
-	const cpfValue = interaction.fields.getTextInputValue('cpfInput');
-	console.log({ cpfValue });*/
 }
 
 
