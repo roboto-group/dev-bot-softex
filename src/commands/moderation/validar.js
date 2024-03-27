@@ -76,7 +76,6 @@ module.exports = {
       if (user) {
         console.log('CPF localizado no banco de dados!')
         
-
         // Verificando se o userId e o guildId estão vazios no BD e os atualiza.
         if (!user.userId) {
           user.userId = interaction.user.id
@@ -86,13 +85,32 @@ module.exports = {
             user.guildId = interaction.guild.id;
             console.log('guildId atualizado!');
         };
-        //lista as roles do usuario apos usar /validar
-        user.cargos = interaction.member.roles.cache.map(role => ({ [role.id]: role.name }))
-        const getUserRolesID = interaction.member.roles.cache.map(role => role.id)
         
-        console.log('Atualizações salvas no Banco de Dados.');
-        await user.save();
+        
+        //Pega as roles que o usuario possui no servidor
+        const getUserRoles = interaction.member.roles.cache.map(role => ({ [role.id]: role.name }))
 
+        //Testa se a role ja existe no BD. Se não existir ela e adicionada
+        for (let role of getUserRoles){
+          let roleName = Object.values(role)
+          let roleID = Object.keys(role)
+          console.log(role)
+            try {
+              const documento = await User.findOne({ [`cargos.${roleID}`]: { $exists: true } });
+              if (!documento) {
+                console.log(`O cargo ${roleName} ${roleID} adicionado no banco de dados para este usuário.`);
+                user.cargos.push(role)
+              }
+            } catch (error) {
+                console.error('Erro ao consultar o banco de dados:', error);
+            }
+        }
+      
+       // console.log(Object.values(user.cargos[5]));
+        //console.log(user.cargos);
+        
+        await user.save();
+        console.log('Atualizações salvas no Banco de Dados.');
 
         //resposta ao usuário
         await interaction.editReply({
@@ -103,10 +121,10 @@ module.exports = {
         
         const novoUser = interaction.member
         
-        if (user.curso === 'Back-end') {
-          //passando o cargo
-          novoUser.roles.add(idCargo);
-        };
+        //if (user.curso === 'Back-end') {
+        //  //passando o cargo
+        //  novoUser.roles.add(idCargo);
+        //};
       
       } else { // caso o usuário não exista no BD
         interaction.editReply(`CPF não foi localizado!\nTente novamente ou entre em contato com algum administrador.`)
