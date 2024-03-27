@@ -5,6 +5,7 @@ const { ModalSubmitInteraction, Client, Interaction, ActionRowBuilder, ModalBuil
  * @param {ModalSubmitInteraction} interaction 
  * @returns 
  */
+let cpfValue;
 module.exports = async (client, interaction) => {
 
     if(!interaction.isButton()) return;
@@ -35,14 +36,17 @@ module.exports = async (client, interaction) => {
     //esperando o modal ser submetido
     const filter = (interaction) => interaction.customId === 'verifyModal';
 
+    const modalInteraction = await interaction.awaitModalSubmit({ filter, time: 30_000 });
 
-    interaction
-        .awaitModalSubmit({ filter, time: 30_000})
-        .then((modalInteraction) => {
-            const cpfValue = modalInteraction.fields.getTextInputValue('cpfInput');
+    if (modalInteraction) {
+        cpfValue = modalInteraction.fields.getTextInputValue('cpfInput');
 
-            modalInteraction.reply(`Seu cpf é '${cpfValue}' hohohohoho`)
-        });
+        modalInteraction.reply(`A submissão do Modal foi bem sucedida!`);
+    }
+
+    console.log(cpfValue);
+
+    
 }
 
 
