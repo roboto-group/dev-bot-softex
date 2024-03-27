@@ -55,8 +55,12 @@ module.exports = async (client, interaction) => {
     console.log(interactionModal);
     console.log(interaction);
 
+    /**
+     * SEÇÃO ABAIXO DEVE TER O SCRIPT PARA VERIFICAÇÃO DO CPF
+     */
+
     /** 
-    //verificação do CPF
+    //IDs dos cargos
     const idCargoFront = '1186625105565061120'
     const idCargoBack = '1186625588874706955'
     
