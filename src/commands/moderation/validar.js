@@ -1,9 +1,15 @@
 const { ApplicationCommandOptionType, Client, Interaction } = require("discord.js");
 const User = require('../../models/Users');
 
+function padronizaCPF(cpf) {
+  cpf = cpf.replace(/\D/g, '');
+  cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  return cpf
+}
+
 function validarCPF(cpf) {
   // Remover espaços em branco e caracteres especiais
-  cpf = cpf.replace(/\D/g, '');
+  cpf = cpf.replace(/[^a-zA-Z0-9]/g, '');
   // Verificar se o CPF tem 11 dígitos
   if (cpf.length !== 11) {
     return false;
@@ -45,9 +51,6 @@ module.exports = {
    * @param {Interaction} interaction 
    */
   callback: async (client, interaction, ) => {
-    //cargo backend
-    const idCargo = '1221918638898942162'
-   
     try {
       //verifica se o usuario e bot
       if (interaction.user.bot) return;
@@ -57,13 +60,16 @@ module.exports = {
 
       await interaction.deferReply({ephemeral: true});
 
-      const cpf = interaction.options._hoistedOptions[0].value
+      let cpf = interaction.options._hoistedOptions[0].value
+
       //verifica se o CPF informado e valido
       if (validarCPF(cpf) == false){
         //await interaction.reply({ content: 'Secret Pong!', ephemeral: true });
-        interaction.editReply(`O CPF informado não é válido!\nTente novamente ou entre em contato com os administradores do servidor.`)
+        interaction.editReply(`O CPF informado, não é válido!\nTente novamente ou entre em contato com os administradores do servidor.`)
         return
       }
+
+      cpf = padronizaCPF(cpf)
 
       //criando a consulta
       let query = {
@@ -75,65 +81,67 @@ module.exports = {
       //Se o usuario existir no BD
       if (user) {
         console.log('CPF localizado no banco de dados!')
-        
         // Verificando se o userId e o guildId estão vazios no BD e os atualiza.
-        if (!user.userId) {
+        if (user.userId) {
+          interaction.editReply(`Você ja foi validado anteriormente!`)
+          return
+        } else {
           user.userId = interaction.user.id
-          console.log('userId do Discord foi vinculado ao CPF')
+          console.log('userId foi adicionado ao BD')
+          //Pega as roles que o usuario possui no servidor
+          const getUserRoles = interaction.member.roles.cache.map(role => ({ [role.id]: role.name }))
+
+          //Testa se a role ja existe no BD. Se não existir ela e adicionada
+          for (let role of getUserRoles){
+            let roleName = Object.values(role)
+            let roleID = Object.keys(role)
+              try {
+                const documento = await User.findOne({ [`cargos.${roleID}`]: { $exists: true } });
+                if (!documento) {
+                  console.log(`O cargo ${roleName} com ID ${roleID}, foi adicionado ao BD.`);
+                  user.cargos.push(role)
+                };
+              } catch (error) {
+                  console.error('Erro ao consultar o banco de dados:', error);
+              };
+          };
         };
         if (!user.guildId) {
             user.guildId = interaction.guild.id;
             console.log('guildId atualizado!');
         };
-        
-        
-        //Pega as roles que o usuario possui no servidor
-        const getUserRoles = interaction.member.roles.cache.map(role => ({ [role.id]: role.name }))
-
-        //Testa se a role ja existe no BD. Se não existir ela e adicionada
-        for (let role of getUserRoles){
-          let roleName = Object.values(role)
-          let roleID = Object.keys(role)
-          console.log(role)
-            try {
-              const documento = await User.findOne({ [`cargos.${roleID}`]: { $exists: true } });
-              if (!documento) {
-                console.log(`O cargo ${roleName} ${roleID} adicionado no banco de dados para este usuário.`);
-                user.cargos.push(role)
-              }
-            } catch (error) {
-                console.error('Erro ao consultar o banco de dados:', error);
-            }
-        }
-      
-       // console.log(Object.values(user.cargos[5]));
-        //console.log(user.cargos);
-        
         await user.save();
         console.log('Atualizações salvas no Banco de Dados.');
 
         //resposta ao usuário
         await interaction.editReply({
-          //??? Modificar mensagem de acordo com o canal/cargo
-          content: `${user.nome} é um aluno do curso de ${user.curso} do turno da ${user.turno}.`,
-          ephemeral: true,
+          content: 'Você foi validado com sucesso!',
         });
         
+        //Verifica se os cargos que usuário possui no BD e atribui eles no servidor, caso já não foram atribuidos.
         const novoUser = interaction.member
+        const novoUserID = interaction.user.tag
+        try {
+          for (let role of user.cargos){
+            const roleID = Object.keys(role)[0]
+            const roleName = Object.values(role)[0]
+            if (!interaction.member.roles.cache.has(roleID)) {
+              novoUser.roles.add(roleID);
+              console.log(`${novoUserID} recebeu o cargo: ${roleName}`);
+            };
+          };
+        } catch (error) {
+          console.log('Erro ao consultar BD para atribuir cargos', error)
+        };
         
-        //if (user.curso === 'Back-end') {
-        //  //passando o cargo
-        //  novoUser.roles.add(idCargo);
-        //};
-      
-      } else { // caso o usuário não exista no BD
-        interaction.editReply(`CPF não foi localizado!\nTente novamente ou entre em contato com algum administrador.`)
+      // caso o usuário não exista no BD  
+      } else {
+        interaction.editReply(`O CPF informado, não foi localizado no nosso sistema!\nTente novamente ou entre em contato com algum administrador.`)
         return;
-      }
-
+      };
     } catch (error) {
       console.log(error)
-    }
+    };
   },
   
   name: 'validar',
@@ -146,5 +154,4 @@ module.exports = {
       type: ApplicationCommandOptionType.String,
     }
   ]
-}
-
+};
