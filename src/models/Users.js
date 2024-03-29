@@ -9,11 +9,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  balance: {
-    type: Number,
-    default: 0,
-  },
-  userName: {
+  nome: {
     type: String,
     required: true,
   },
@@ -25,11 +21,15 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  horario: {
+  turno: {
     type: String,
     required: true,
   },
-  lastDaily: {
+  cargos: {
+    type: Array,
+    required: true,
+  },
+  dataValidacao: {
     type: Date,
     required: true,
   },

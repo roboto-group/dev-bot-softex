@@ -26,7 +26,7 @@ module.exports = async (client, interaction) => {
     .setCustomId('cpfInput')
     .setLabel('Digite o seu CPF abaixo:')
     .setStyle(TextInputStyle.Short)
-    .setMaxLength(11)
+    .setMaxLength(15)
     .setPlaceholder('Digite apenas números.')
     .setRequired(true);
 
@@ -48,18 +48,18 @@ module.exports = async (client, interaction) => {
         cpfValue = modalInteraction.fields.getTextInputValue('cpfInput');
         interactionModal = modalInteraction;
 
-        modalInteraction.reply(`A submissão do Modal foi bem sucedida!`);
+        //await modalInteraction.editReply(`A submissão do Modal foi bem sucedida!`);
     }
 
-    console.log(cpfValue);
-    console.log(interactionModal);
-    console.log(interaction);
+    //console.log(cpfValue);
+    //console.log(interactionModal);
+    //console.log(interaction);
 
     /**
      * SEÇÃO ABAIXO DEVE TER O SCRIPT PARA VERIFICAÇÃO DO CPF
      */
 
-    /** 
+     
     //IDs dos cargos
     const idCargoFront = '1186625105565061120'
     const idCargoBack = '1186625588874706955'
@@ -74,7 +74,7 @@ module.exports = async (client, interaction) => {
       //Será necessário construir uma validação para o CPF -> @Marlos, se garante??
       //const cpf = interaction.options._hoistedOptions[0].value
       
-      //await interaction.deferReply({ephemeral: true});
+      await interactionModal.deferReply({ephemeral: true});
 
       //criando a consulta
       let query = {
@@ -83,6 +83,7 @@ module.exports = async (client, interaction) => {
 
       //fazendo a consulta ao BD
       let user = await User.findOne(query);
+      console.log(user);
 
       //Se o usuario existir no BD
       if (user) {
@@ -92,10 +93,10 @@ module.exports = async (client, interaction) => {
         
         if (!user.userId) {
           console.log('userId do Discord foi vinculado ao CPF')
-          user.userId = interactionModal.user.id
+          user.userId = interaction.user.id
           if (!user.guildId) {
             console.log('guildId atualizado!');
-            user.guildId = interactionModal.guild.id;
+            user.guildId = interaction.guild.id;
           }
           console.log('Atualizações salves do Banco de Dados.');
           await user.save();
@@ -103,7 +104,7 @@ module.exports = async (client, interaction) => {
           
         //resposta ao usuário
         await interactionModal.editReply({
-          content: `${user.userName} é um aluno do curso de ${user.curso} do turno da ${user.horario}.`,
+          content: `${user.nome} é um aluno do curso de ${user.curso} do turno da ${user.turno}.`,
           ephemeral: true,
         });
           
@@ -130,7 +131,7 @@ module.exports = async (client, interaction) => {
         
       } else { // caso o usuário não exista no BD
         
-        interactionModal.editReply(`Não consegui encontrar seu CPF no banco de dados! 😒 Entre em contato com o Adm do curso.`)
+        await interactionModal.editReply(`Não consegui encontrar seu CPF no banco de dados! 😒 Entre em contato com o Adm do curso.`)
         return;
       }
 
@@ -138,7 +139,7 @@ module.exports = async (client, interaction) => {
     } catch (error) {
       console.log(error);
     }
-*/
+
 
 }
 
