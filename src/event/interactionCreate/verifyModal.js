@@ -83,7 +83,6 @@ module.exports = async (client, interaction) => {
 
       //fazendo a consulta ao BD
       let user = await User.findOne(query);
-      console.log(user);
 
       //Se o usuario existir no BD
       if (user) {
