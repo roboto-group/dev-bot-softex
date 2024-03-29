@@ -56,7 +56,7 @@ module.exports = {
       if (interaction.user.bot) return;
       
       //verifica se a interacao foi feita de dentro de um servidor
-      //if (!interaction.inGuild()) return;
+      if (!interaction.inGuild()) return;
 
       await interaction.deferReply({ephemeral: true});
 
@@ -64,7 +64,6 @@ module.exports = {
 
       //verifica se o CPF informado e valido
       if (validarCPF(cpf) == false){
-        //await interaction.reply({ content: 'Secret Pong!', ephemeral: true });
         interaction.editReply(`O CPF informado, não é válido!\nTente novamente ou entre em contato com os administradores do servidor.`)
         return
       }
@@ -83,7 +82,7 @@ module.exports = {
         console.log('CPF localizado no banco de dados!')
         // Verificando se o userId e o guildId estão vazios no BD e os atualiza.
         if (user.userId) {
-          interaction.editReply(`Você ja foi validado anteriormente!`)
+          interaction.editReply(`Você ja foi validado anteriormente`)
           return
         } else {
           user.userId = interaction.user.id
@@ -110,6 +109,8 @@ module.exports = {
             user.guildId = interaction.guild.id;
             console.log('guildId atualizado!');
         };
+        //insere no banco um timestanp de quando o usuário foi validado
+        user.dataValidacao = new Date();
         await user.save();
         console.log('Atualizações salvas no Banco de Dados.');
 
@@ -134,7 +135,7 @@ module.exports = {
           console.log('Erro ao consultar BD para atribuir cargos', error)
         };
         
-      // caso o usuário não exista no BD  
+      //caso o usuário não exista no BD  
       } else {
         interaction.editReply(`O CPF informado, não foi localizado no nosso sistema!\nTente novamente ou entre em contato com algum administrador.`)
         return;

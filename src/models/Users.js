@@ -27,8 +27,12 @@ const userSchema = new Schema({
   },
   cargos: {
     type: Array,
-    required: true
-  }
+    required: true,
+  },
+  dataValidacao: {
+    type: Date,
+    required: true,
+  },
 })
 
 module.exports = model('User', userSchema);
