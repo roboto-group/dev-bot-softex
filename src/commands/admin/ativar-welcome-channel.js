@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, SlashCommandBuilder, Interaction, PermissionFlagsBits, ChannelType } = require('discord.js');
+const { ApplicationCommandOptionType, Interaction, PermissionFlagsBits } = require('discord.js');
 const WelcomeChannelSchema = require('../../models/WelcomeChannel');
 
 module.exports = {
