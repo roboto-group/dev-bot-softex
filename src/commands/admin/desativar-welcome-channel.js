@@ -22,7 +22,7 @@ module.exports = {
       await interaction.deferReply({ephemeral: true});
       //vamos verificar se existe um documento com esse guildId no BD
       if (!(await WelcomeChannelSchema.exists({ guildId: interaction.guild.id, channelId: targetChannel.id}))) {
-        interaction.editReply(`Nenhum canal foi ativado com o modo 'Boas-Vindas' neste servidor.\nExecute "/ativar-welcome-channel" para configurar a função.`);
+        interaction.editReply(`Nenhum canal está ativado com o modo 'Boas-Vindas' neste servidor.\nExecute "/ativar-welcome-channel" para configurar a função.`);
         return;
       }
       //caso exista o match, faremos a exclusão
