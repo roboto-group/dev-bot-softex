@@ -42,7 +42,7 @@ module.exports = async (client, guildMember) => {
                 }).catch(() => {});
             }
 
-            const customMessage = welcomeConfig.customMessage || {content:'Acho que vi um novo membro do servidor...', ephemeral: true};
+            const customMessage = welcomeConfig.customMessage || 'Acho que vi um novo membro do servidor...';
 
             const welcomeMessage = customMessage;
             
