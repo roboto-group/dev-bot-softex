@@ -16,6 +16,7 @@ module.exports = {
       }
 
     const targetChannel = interaction.options.getChannel('target-channel');
+    const customMessage = interaction.options.getString('custom-message');
       
     try {
       await interaction.deferReply({ephemeral: true});
@@ -32,6 +33,7 @@ module.exports = {
          welcomeChannel = new WelcomeChannelSchema({
             guildId: interaction.guild.id,
             channelId: targetChannel.id,
+            customMessage: customMessage,
         });
       }
       //Salvando alterações no BD
@@ -53,6 +55,11 @@ module.exports = {
       description: 'O canal que você quer que sirva de boas-vindas neste servidor.',
       type: ApplicationCommandOptionType.Channel,
       required: true,
+    },
+    {
+      name: 'custom-message',
+      description: 'Escreva uma mensagem de boas-vindas.',
+      type: ApplicationCommandOptionType.String,
     }
   ],
   permissionsRequired: [PermissionFlagsBits.Administrator],

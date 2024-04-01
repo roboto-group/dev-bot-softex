@@ -10,6 +10,10 @@ const welcomeChannelSchema = new Schema({
         type: String,
         required: true,
         unique: true,
+    },
+    customMessage: {
+        type: String,
+        default: null,
     }
 }, 
 { timestamps: true }
