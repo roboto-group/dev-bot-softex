@@ -43,6 +43,7 @@ module.exports = {
       description: "O canal que você quer desativar o modo 'Boas-Vindas'.",
       type: ApplicationCommandOptionType.Channel,
       required: true,
+      deleted: true,
     }
   ],
   permissionsRequired: [PermissionFlagsBits.Administrator],

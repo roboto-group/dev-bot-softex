@@ -53,6 +53,7 @@ module.exports = {
       description: 'O canal que você quer que sirva de boas-vindas neste servidor.',
       type: ApplicationCommandOptionType.Channel,
       required: true,
+      deleted: true,
     }
   ],
   permissionsRequired: [PermissionFlagsBits.Administrator],
