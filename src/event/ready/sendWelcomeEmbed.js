@@ -1,7 +1,9 @@
-// at the top of your file
-const { EmbedBuilder, Client, Interaction, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder } = require('discord.js');
+const { Client, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
-module.exports = (client, interaction) => {
+/**
+ * @param {Client} client
+ */
+module.exports = async (client) => {
     try {
         //pegando o ID do canal de verificação
         const channel = client.channels.cache.get('1194645892607783034');
@@ -31,6 +33,5 @@ module.exports = (client, interaction) => {
     } catch (error) {
         console.log(`Erro durante o procedimento de boas-vindas: ${error}`);
     }
-    
 }
 
