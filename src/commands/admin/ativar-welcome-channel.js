@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, Interaction, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, Interaction, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const WelcomeChannelSchema = require('../../models/WelcomeChannel');
 
 module.exports = {
@@ -7,6 +7,19 @@ module.exports = {
    * @param {Interaction} interaction 
    */
   callback: async (client, interaction) => {
+
+    //criação da embed de boas-vindas
+    const welcomeEmbed = new EmbedBuilder()
+    .setColor(0x0099FF)
+    .setTitle('Seja Bem-Vindo(a)!')
+    .setDescription('Olá! você está no canal de verificação do servidor SOFTEX LABS. Execute o comando /verificar e digite seu CPF no local indicado, para que possamos te dar pleno acesso.')
+    .addFields(
+        { name: 'Dúvidas?', value: 'Fale com a coordenação do curso.' },
+        { name: '\u200B', value: '\u200B' },
+    )
+    .setTimestamp()
+    .setFooter({ text: 'SOFTEX Pernambuco', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
+
     //Checando se o comando foi executado em um servidor
     if (!interaction.inGuild()) {
         interaction.reply({
@@ -16,7 +29,7 @@ module.exports = {
       }
 
     const targetChannel = interaction.options.getChannel('target-channel');
-    const customMessage = interaction.options.getString('custom-message');
+    
       
     try {
       await interaction.deferReply({ephemeral: true});
@@ -33,13 +46,20 @@ module.exports = {
          welcomeChannel = new WelcomeChannelSchema({
             guildId: interaction.guild.id,
             channelId: targetChannel.id,
-            customMessage: customMessage,
         });
       }
       //Salvando alterações no BD
       await welcomeChannel.save();
       //Respondendo ao usuário
       interaction.editReply(`Canal ${targetChannel} configurado no modo 'Boas-Vindas' com sucesso! Para desabilitar a função, execute "/desativar-welcome-channel"`);
+
+      //enviando a embed para o canal de boas-vindas
+      targetChannel.send({ embeds: [welcomeEmbed], 
+        components: [new ActionRowBuilder()
+            .addComponents(new ButtonBuilder()
+                .setLabel('verificar')
+                .setStyle(ButtonStyle.Primary)
+                .setCustomId('welcomeButton'))]});
 
     } catch (error) {
         console.log(`Erro na execução do comando:\n${error}`);
@@ -56,11 +76,6 @@ module.exports = {
       type: ApplicationCommandOptionType.Channel,
       required: true,
     },
-    {
-      name: 'custom-message',
-      description: 'Escreva uma mensagem de boas-vindas.',
-      type: ApplicationCommandOptionType.String,
-    }
   ],
   permissionsRequired: [PermissionFlagsBits.Administrator],
 
