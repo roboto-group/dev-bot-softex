@@ -3,11 +3,11 @@ const { Schema, model } = require('mongoose');
 const userSchema = new Schema({
   userId: {
     type: String,
-    required: true,
+    required: false,
   },
   guildId: {
     type: String,
-    required: true,
+    required: false,
   },
   nome: {
     type: String,
@@ -31,7 +31,7 @@ const userSchema = new Schema({
   },
   dataValidacao: {
     type: Date,
-    required: true,
+    required: false,
   },
 })
 
