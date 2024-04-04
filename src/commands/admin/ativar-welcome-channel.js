@@ -12,7 +12,7 @@ module.exports = {
     const welcomeEmbed = new EmbedBuilder()
     .setColor(0x0099FF)
     .setTitle('Seja Bem-Vindo(a)!')
-    .setDescription('Olá! você está no canal de verificação do servidor SOFTEX LABS. Execute o comando /verificar e digite seu CPF no local indicado, para que possamos te dar pleno acesso.')
+    .setDescription('Olá! você está no canal de verificação do servidor SOFTEX LABS. Clique no botão abaixo e digite seu CPF no local indicado, para que possamos te dar pleno acesso.')
     .addFields(
         { name: 'Dúvidas?', value: 'Fale com a coordenação do curso.' },
         { name: '\u200B', value: '\u200B' },
