@@ -107,6 +107,48 @@ module.exports = {
                   interaction.member.roles.remove('1221917320339787776')
                   continue
                   };
+                //removendo cargo front-01
+                if (roleID == '1221918249738965082') {
+                  interaction.member.roles.remove('1221918249738965082')
+                  continue
+                  };
+                //removendo cargo front-02
+                if (roleID == '1221918559584649376') {
+                  interaction.member.roles.remove('1221918559584649376')
+                  continue
+                  };
+                //removendo cargo back-01
+                if (roleID == '1221918638898942162') {
+                  interaction.member.roles.remove('1221918638898942162')
+                  continue
+                  };
+                //removendo cargo back-02
+                if (roleID == '1221918692036841645') {
+                  interaction.member.roles.remove('1221918692036841645')
+                  continue
+                  };
+                //removendo cargo tutor-01
+                if (roleID == '1221919219730350113') {
+                  interaction.member.roles.remove('1221919219730350113')
+                  continue
+                  };
+                //removendo cargo tutor-02
+                if (roleID == '1221919302740082779') {
+                  interaction.member.roles.remove('1221919302740082779')
+                  continue
+                  };
+                //removendo cargo tutor-03
+                if (roleID == '1221919342745354250') {
+                  interaction.member.roles.remove('1221919342745354250')
+                  continue
+                  };
+                //removendo cargo tutor-04
+                if (roleID == '1221919388211347627') {
+                  interaction.member.roles.remove('1221919388211347627')
+                  continue
+                  };
+                
+
                 const documento = await User.findOne({ ['cpf']: cpf, [`cargos.${roleID}`]: { $exists: true } }); 
                 
                 if (!documento) {
@@ -132,7 +174,7 @@ module.exports = {
           content: 'Você foi validado com sucesso!',
         });
         
-        //Verifica se os cargos que usuário possui no BD e atribui eles no Discord, caso já não foram atribuidos.
+        //Verifica os cargos que usuário possui no BD e atribui eles no Discord, caso já não foram atribuidos.
         const novoUser = interaction.member
         const novoUserID = interaction.user.tag
 
