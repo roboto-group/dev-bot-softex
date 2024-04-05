@@ -83,7 +83,6 @@ module.exports = {
         console.log('CPF localizado no banco de dados!')
         // Verificando se o userId e o guildId estão vazios no BD e os atualiza.
         if (user.userId) {
-          
           interaction.editReply(`Você ja foi validado anteriormente`)
           return
 
@@ -93,42 +92,30 @@ module.exports = {
           console.log('userId foi adicionado ao BD')
           //Pega as roles que o usuario possui no servidor
           const getUserRoles = interaction.member.roles.cache.map(role => ({ [role.id]: role.name }))
-          //console.log(getUserRoles)
           //Testa se a role ja existe no BD. Se não existir ela é adicionada
-          //for teste
-          
-        
           for (let role of getUserRoles){
             let roleName = Object.values(role)
             let roleID = Object.keys(role)
-            let contador = 0
-            
-
+            console.log(role)
               try {
+                //ignora o cargo @everyone
+                if (roleID == '1180816511636619305') {
+                  continue
+                  };
+                //removendo cargo residente old
+                if (roleID == '1221917320339787776') {
+                  interaction.member.roles.remove('1221917320339787776')
+                  continue
+                  };
                 const documento = await User.findOne({ ['cpf']: cpf, [`cargos.${roleID}`]: { $exists: true } }); 
                 
                 if (!documento) {
                   console.log(`O cargo ${roleName} com ID ${roleID}, foi adicionado ao BD.`);
                   user.cargos.push(role)
                 };
-                
-                // Retirando o cargo "residente old", caso exista no BD: 1221917320339787776
-                if (roleID == '1221917320339787776') {
-                  
-                  user.cargos.splice(contador, 1)
-                  
-
-                  //retirar este cargo do servidor Discord
-                  interaction.member.roles.remove('1221917320339787776')
-                  
-
-                };
-            
-                
-
               } catch (error) {
                   console.error('Erro ao consultar o banco de dados:', error);
-              };
+              };  
           };
         };
         if (!user.guildId) {
@@ -150,6 +137,7 @@ module.exports = {
         const novoUserID = interaction.user.tag
 
         try {
+          console.log(user.cargos)
           for (let role of user.cargos){
             const roleID = Object.keys(role)[0]
             const roleName = Object.values(role)[0]

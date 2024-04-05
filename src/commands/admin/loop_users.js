@@ -1,7 +1,6 @@
 const { ApplicationCommandOptionType, Client, Interaction } = require("discord.js");
 const Users = require('../../models/Users');
 
-
 module.exports = {
   callback: async (client, interaction) => {
     
@@ -13,9 +12,6 @@ module.exports = {
     let nomeCargoEspecifico = 'residente new'
     
     for (let user of users) {
-      
-      
-      
       if (user.cargos.length > 0) {
         //1º passando pelos usuários que já tem cargos no BD
         
@@ -28,8 +24,7 @@ module.exports = {
             
             console.log(`${user.nome} já tem o cargo específico`)
             return
-          };
-          
+          };    
         }
 
         //Se o cara nao tiver o cargo específico...
@@ -41,11 +36,7 @@ module.exports = {
           //diponibilização de cargo específico no banco de dados e servidor
           user.cargos.push({ [cargoEspecifico]: nomeCargoEspecifico })
           //interaction.member.roles.add(cargoEspecifico)
-          
         };
-          
-        
-
       } else {
 
         //O usuário não tem nenhum cargo no BD, então ganha o cargo no BD e no servidor discord
@@ -62,10 +53,7 @@ module.exports = {
     console.log(`Iterei por ${contador} registros.`)
   },
     
-
   name: 'loop_users',
   description: 'Faz o loop nos usuários armazenados no banco dando cargo ',
   devOnly: true,
-
-
 }
