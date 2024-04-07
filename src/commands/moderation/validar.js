@@ -44,6 +44,19 @@ function validarCPF(cpf) {
   return true;
 }
 
+const paraRemover = [
+  { '1194646146325426176': 'Não-Verificado' },
+  { '1221917320339787776': 'residente old' },
+  { '1221918249738965082': 'front-01' },
+  { '1221918559584649376': 'front-02' },
+  { '1221918638898942162': 'back-01' },
+  { '1221918692036841645': 'back-02' },
+  { '1221919219730350113': 'tutor-01' },
+  { '1221919302740082779': 'tutor-02' },
+  { '1221919342745354250': 'tutor-03' },
+  { '1221919388211347627': 'tutor-04' }
+];
+
 module.exports = {
   /**
    * 
@@ -68,11 +81,9 @@ module.exports = {
         return
       }
 
-      cpf = padronizaCPF(cpf)
-
       //criando a consulta
       let query = {
-        cpf: cpf
+        cpf: padronizaCPF(cpf)
       };
 
       //fazendo a consulta ao BD
@@ -87,67 +98,36 @@ module.exports = {
           return
 
         } else {
+          //adicionando cargo verificado
+          await interaction.member.roles.add("1226388667942310099")
           //comentei para facilitar os testes >> retirar quando acabar os testes ******
-          //user.userId = interaction.user.id
+          user.userId = interaction.user.id
           console.log('userId foi adicionado ao BD')
+          user.guildId = interaction.guild.id;
+          console.log('guildId atualizado!');
+          //insere no banco um timestanp de quando o usuário foi validado
+          user.dataValidacao = new Date();
+          
           //Pega as roles que o usuario possui no servidor
           const getUserRoles = interaction.member.roles.cache.map(role => ({ [role.id]: role.name }))
+          console.log(getUserRoles);
+          //remove cargos no servidor e em getUserRoles baseado no Array paraRemover
+          paraRemover.forEach(role => {
+            let roleID = Object.keys(role)[0];
+            let index = getUserRoles.findIndex(role => role[roleID] !== undefined);
+            if (index !== -1) {
+              getUserRoles.splice(index, 1);
+              interaction.member.roles.remove(roleID)
+            }
+          });
+
           //Testa se a role ja existe no BD. Se não existir ela é adicionada
           for (let role of getUserRoles){
             let roleName = Object.values(role)
             let roleID = Object.keys(role)
-            console.log(role)
               try {
                 //ignora o cargo @everyone
-                if (roleID == '1180816511636619305') {
-                  continue
-                  };
-                //removendo cargo residente old
-                if (roleID == '1221917320339787776') {
-                  interaction.member.roles.remove('1221917320339787776')
-                  continue
-                  };
-                //removendo cargo front-01
-                if (roleID == '1221918249738965082') {
-                  interaction.member.roles.remove('1221918249738965082')
-                  continue
-                  };
-                //removendo cargo front-02
-                if (roleID == '1221918559584649376') {
-                  interaction.member.roles.remove('1221918559584649376')
-                  continue
-                  };
-                //removendo cargo back-01
-                if (roleID == '1221918638898942162') {
-                  interaction.member.roles.remove('1221918638898942162')
-                  continue
-                  };
-                //removendo cargo back-02
-                if (roleID == '1221918692036841645') {
-                  interaction.member.roles.remove('1221918692036841645')
-                  continue
-                  };
-                //removendo cargo tutor-01
-                if (roleID == '1221919219730350113') {
-                  interaction.member.roles.remove('1221919219730350113')
-                  continue
-                  };
-                //removendo cargo tutor-02
-                if (roleID == '1221919302740082779') {
-                  interaction.member.roles.remove('1221919302740082779')
-                  continue
-                  };
-                //removendo cargo tutor-03
-                if (roleID == '1221919342745354250') {
-                  interaction.member.roles.remove('1221919342745354250')
-                  continue
-                  };
-                //removendo cargo tutor-04
-                if (roleID == '1221919388211347627') {
-                  interaction.member.roles.remove('1221919388211347627')
-                  continue
-                  };
-                
+                if (roleID == '1180816511636619305') {continue};
 
                 const documento = await User.findOne({ ['cpf']: cpf, [`cargos.${roleID}`]: { $exists: true } }); 
                 
@@ -160,12 +140,6 @@ module.exports = {
               };  
           };
         };
-        if (!user.guildId) {
-            user.guildId = interaction.guild.id;
-            console.log('guildId atualizado!');
-        };
-        //insere no banco um timestanp de quando o usuário foi validado
-        user.dataValidacao = new Date();
         await user.save();
         console.log('Atualizações salvas no Banco de Dados.');
 
@@ -174,12 +148,11 @@ module.exports = {
           content: 'Você foi validado com sucesso!',
         });
         
-        //Verifica os cargos que usuário possui no BD e atribui eles no Discord, caso já não foram atribuidos.
+        //Verifica os cargos que usuário possui no BD e atribui eles no Discord
         const novoUser = interaction.member
         const novoUserID = interaction.user.tag
 
         try {
-          console.log(user.cargos)
           for (let role of user.cargos){
             const roleID = Object.keys(role)[0]
             const roleName = Object.values(role)[0]
