@@ -129,9 +129,20 @@ module.exports = async (client, interaction) => {
             
         
       } else { // caso o usuário não exista no BD
+        //criação da embed de boas-vindas
+      const cadastroEmbed = new EmbedBuilder()
+      .setColor(0x0099FF)
+      .setTitle('Cadastramento:')
+      .setDescription(`${user.name}, vimos que você não participa dos cursos ministrados pela SOFTEX. Por isso, para que tenha acesso ao servidor, realize o cadastro clicando no botão abaixo.`)
+      .addFields(
+          { name: 'Dúvidas?', value: 'Fale com a coordenação do curso.' },
+          { name: '\u200B', value: '\u200B' },
+      )
+      .setTimestamp()
+      .setFooter({ text: 'SOFTEX Pernambuco', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
         
-        await interactionModal.editReply(`Não consegui encontrar seu CPF no banco de dados! 😒 Entre em contato com o Adm do curso.`)
-        return;
+        //await interactionModal.editReply(`Não consegui encontrar seu CPF no banco de dados! 😒 Entre em contato com o Adm do curso.`)
+        //return;
       }
 
 
