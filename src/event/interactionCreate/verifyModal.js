@@ -1,4 +1,4 @@
-const { ModalSubmitInteraction, Client, Interaction, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { ModalSubmitInteraction, Client, Interaction, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const User = require('../../models/Users');
 /**
  * 
@@ -133,7 +133,7 @@ module.exports = async (client, interaction) => {
       const cadastroEmbed = new EmbedBuilder()
       .setColor(0x0099FF)
       .setTitle('Cadastramento:')
-      .setDescription(`${user.name}, vimos que você não participa dos cursos ministrados pela SOFTEX. Por isso, para que tenha acesso ao servidor, realize o cadastro clicando no botão abaixo.`)
+      .setDescription(`Vimos que você não participa dos cursos ministrados pela SOFTEX. Por isso, para que tenha acesso ao servidor, realize o cadastro clicando no botão abaixo.`)
       .addFields(
           { name: 'Dúvidas?', value: 'Fale com a coordenação do curso.' },
           { name: '\u200B', value: '\u200B' },
@@ -141,8 +141,13 @@ module.exports = async (client, interaction) => {
       .setTimestamp()
       .setFooter({ text: 'SOFTEX Pernambuco', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
         
-        //await interactionModal.editReply(`Não consegui encontrar seu CPF no banco de dados! 😒 Entre em contato com o Adm do curso.`)
-        //return;
+        await interactionModal.editReply({ embeds: [cadastroEmbed], 
+          components: [new ActionRowBuilder()
+              .addComponents(new ButtonBuilder()
+                  .setLabel('cadastrar')
+                  .setStyle(ButtonStyle.Secondary)
+                  .setCustomId('cadastroButton'))]})
+
       }
 
 
