@@ -14,42 +14,46 @@ let interactionModal;
 
 module.exports = async (client, interaction) => {
 
-    if(!interaction.isButton()) return;
+    if(interaction.isButton()) {
+      if(interaction.customId === 'welcomeButton') {
+        //criando o modal
+        const modal = new ModalBuilder()
+        .setCustomId('verifyModal')
+        .setTitle('Verificação de CPF');
 
-    //criando o modal
-    const modal = new ModalBuilder()
-    .setCustomId('verifyModal')
-    .setTitle('Verificação de CPF');
+        //criando o componente de input do CPF
+        const cpfInput = new TextInputBuilder()
+        .setCustomId('cpfInput')
+        .setLabel('Digite o seu CPF abaixo:')
+        .setStyle(TextInputStyle.Short)
+        .setMaxLength(15)
+        .setPlaceholder('Digite apenas números.')
+        .setRequired(true);
 
-    //criando o componente de input do CPF
-    const cpfInput = new TextInputBuilder()
-    .setCustomId('cpfInput')
-    .setLabel('Digite o seu CPF abaixo:')
-    .setStyle(TextInputStyle.Short)
-    .setMaxLength(15)
-    .setPlaceholder('Digite apenas números.')
-    .setRequired(true);
+        //precisa de um ActionRow pra cada input de texto
+        const actionRow = new ActionRowBuilder().addComponents(cpfInput);
 
-    //precisa de um ActionRow pra cada input de texto
-    const actionRow = new ActionRowBuilder().addComponents(cpfInput);
+        //adicionando o input ao modal
+        modal.addComponents(actionRow);
 
-    //adicionando o input ao modal
-    modal.addComponents(actionRow);
+        //mostrando o modal ao usuário
+        await interaction.showModal(modal);
 
-    //mostrando o modal ao usuário
-    await interaction.showModal(modal);
+        //esperando o modal ser submetido
+        const filter = (interaction) => interaction.customId === 'verifyModal';
 
-    //esperando o modal ser submetido
-    const filter = (interaction) => interaction.customId === 'verifyModal';
+        const modalInteraction = await interaction.awaitModalSubmit({ filter, time: 30_000 });
 
-    const modalInteraction = await interaction.awaitModalSubmit({ filter, time: 30_000 });
+        if (modalInteraction) {
+            cpfValue = modalInteraction.fields.getTextInputValue('cpfInput');
+            interactionModal = modalInteraction;
 
-    if (modalInteraction) {
-        cpfValue = modalInteraction.fields.getTextInputValue('cpfInput');
-        interactionModal = modalInteraction;
+            //await modalInteraction.editReply(`A submissão do Modal foi bem sucedida!`);
+        }
+      } else return;
+    } else return;
 
-        //await modalInteraction.editReply(`A submissão do Modal foi bem sucedida!`);
-    }
+    
 
     //console.log(cpfValue);
     //console.log(interactionModal);
