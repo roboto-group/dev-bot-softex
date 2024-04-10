@@ -33,6 +33,10 @@ const userSchema = new Schema({
     type: Date,
     required: true,
   },
+  email: {
+    type: String,
+    required: true,
+  },
 })
 
 module.exports = model('User', userSchema);
