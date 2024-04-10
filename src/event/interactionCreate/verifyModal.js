@@ -133,8 +133,6 @@ module.exports = async (client, interaction) => {
             
         
       } else { // caso o usuário não exista no BD
-        await interactionModal.deferReply({ephemeral: true});
-        
         //criação da embed de boas-vindas
       const cadastroEmbed = new EmbedBuilder()
       .setColor(0x0099FF)
